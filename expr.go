@@ -17,8 +17,7 @@ type LogicEngine struct {
 }
 
 func NewEngine(expr string) (*LogicEngine, error) {
-	engine := &LogicEngine{
-	}
+	engine := &LogicEngine{}
 	result, err := engine.UpdateAst(expr)
 	if err != nil || !result {
 		return nil, err
@@ -59,20 +58,14 @@ func parseControlMap(controlMap map[string]interface{}) map[string]node.ValueNod
 	for key, control := range controlMap {
 		switch control.(type) {
 		case int:
-			node := node.NewIntNode(int64(control.(int)))
-			nodeMap[key] = node
+			nodeMap[key] = node.NewIntNode(int64(control.(int)))
 		case int64:
-			node := node.NewIntNode(control.(int64))
-			nodeMap[key] = node
-
+			nodeMap[key] = node.NewIntNode(control.(int64))
 		case float64:
 			// value from json will be always float64
-			node := node.NewIntNode(int64(control.(float64)))
-			nodeMap[key] = node
-
+			nodeMap[key] = node.NewFloatNode(control.(float64))
 		case string:
-			node := node.NewStrNode(control.(string))
-			nodeMap[key] = node
+			nodeMap[key] = node.NewStrNode(control.(string))
 		}
 	}
 	return nodeMap
@@ -94,6 +87,8 @@ func eval(mem map[string]node.ValueNode, expr ast.Expr) (y node.ValueNode) {
 		switch a.GetType() {
 		case node.TypeInt64:
 			return BinaryIntExpr{}.Invoke(a, b, op)
+		case node.TypeFloat64:
+			return BinaryFloatExpr{}.Invoke(a, b, op)
 		case node.TypeBool:
 			return BinaryBoolExpr{}.Invoke(a, b, op)
 		case node.TypeStr:
@@ -112,6 +107,4 @@ func eval(mem map[string]node.ValueNode, expr ast.Expr) (y node.ValueNode) {
 	default:
 		return node.NewBadNode(Sprintf("%x type is not suppoort", x))
 	}
-
-	panic("internal error")
 }

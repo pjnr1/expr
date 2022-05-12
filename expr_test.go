@@ -36,13 +36,21 @@ var exprExampleList = []struct {
 		`in_array(pid, []int{317, 318, 319})`,
 		true,
 	},
-
 	{
 		map[string]interface{}{"pid": "317"},
 		`in_array(pid, []string{"317", "318", "319"})`,
 		true,
 	},
-
+	{
+		map[string]interface{}{},
+		`1.0 < 1.5 && 2.0 > 0.1`,
+		true,
+	},
+	{
+		map[string]interface{}{},
+		`1.0 > 1.5 && 2.0 > 0.1`,
+		false,
+	},
 }
 
 func TestNewEngine(t *testing.T) {

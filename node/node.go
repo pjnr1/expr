@@ -11,6 +11,7 @@ type Type int
 
 const (
 	TypeInt64 Type = iota
+	TypeFloat64
 	TypeStr
 	TypeBool
 	TypeBad
@@ -36,6 +37,13 @@ func Lit2ValueNode(lit *ast.BasicLit) ValueNode {
 			return NewBadNode(err.Error())
 		}
 		return NewStrNode(value)
+	case token.FLOAT:
+		value, err := strconv.ParseFloat(lit.Value, 64)
+		if err != nil {
+			return NewBadNode(err.Error())
+		}
+		return NewFloatNode(value)
+
 	}
 
 	return NewBadNode(fmt.Sprintf("%s is not support type", lit.Kind))

@@ -1,3 +1,3 @@
 module github.com/lqiz/expr
 
-go 1.14
+go 1.18

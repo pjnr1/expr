@@ -14,6 +14,8 @@ type BinaryStrExpr struct{}
 
 type BinaryIntExpr struct{}
 
+type BinaryFloatExpr struct{}
+
 type CallExpr struct {
 	fn   string // one of "in_array", "ver_compare"
 	args []ast.Expr
@@ -62,6 +64,33 @@ func (b BinaryStrExpr) Invoke(x, y node.ValueNode, op token.Token) node.ValueNod
 func (b BinaryIntExpr) Invoke(x, y node.ValueNode, op token.Token) node.ValueNode {
 	xs, xok := x.(node.IntNode)
 	ys, yok := y.(node.IntNode)
+
+	if !xok || !yok {
+		return node.NewBadNode(x.GetTextValue() + y.GetTextValue())
+	}
+
+	switch op {
+	case token.EQL: // ==
+		return node.BoolNode{
+			True: xs.Value == ys.Value,
+		}
+	case token.LSS: // <
+		return node.BoolNode{
+			True: xs.Value < ys.Value,
+		}
+	case token.GTR: // >
+		return node.NewBoolNode(xs.Value > ys.Value)
+	case token.GEQ: // >=
+		return node.NewBoolNode(xs.Value >= ys.Value)
+	case token.LEQ: // <=
+		return node.NewBoolNode(xs.Value <= ys.Value)
+	}
+	return node.NewBadNode(fmt.Sprintf("unsupported binary operator: %s", op.String()))
+}
+
+func (b BinaryFloatExpr) Invoke(x, y node.ValueNode, op token.Token) node.ValueNode {
+	xs, xok := x.(node.FloatNode)
+	ys, yok := y.(node.FloatNode)
 
 	if !xok || !yok {
 		return node.NewBadNode(x.GetTextValue() + y.GetTextValue())
