@@ -84,6 +84,14 @@ func (b BinaryIntExpr) Invoke(x, y node.ValueNode, op token.Token) node.ValueNod
 		return node.NewBoolNode(xs.Value >= ys.Value)
 	case token.LEQ: // <=
 		return node.NewBoolNode(xs.Value <= ys.Value)
+	case token.ADD: // +
+		return node.NewIntNode(xs.Value + ys.Value)
+	case token.SUB: // -
+		return node.NewIntNode(xs.Value - ys.Value)
+	case token.MUL: // *
+		return node.NewIntNode(xs.Value * ys.Value)
+	case token.QUO: // /
+		return node.NewIntNode(xs.Value / ys.Value)
 	}
 	return node.NewBadNode(fmt.Sprintf("unsupported binary operator: %s", op.String()))
 }
@@ -111,6 +119,14 @@ func (b BinaryFloatExpr) Invoke(x, y node.ValueNode, op token.Token) node.ValueN
 		return node.NewBoolNode(xs.Value >= ys.Value)
 	case token.LEQ: // <=
 		return node.NewBoolNode(xs.Value <= ys.Value)
+	case token.ADD: // +
+		return node.NewFloatNode(xs.Value + ys.Value)
+	case token.SUB: // -
+		return node.NewFloatNode(xs.Value - ys.Value)
+	case token.MUL: // *
+		return node.NewFloatNode(xs.Value * ys.Value)
+	case token.QUO: // /
+		return node.NewFloatNode(xs.Value / ys.Value)
 	}
 	return node.NewBadNode(fmt.Sprintf("unsupported binary operator: %s", op.String()))
 }
